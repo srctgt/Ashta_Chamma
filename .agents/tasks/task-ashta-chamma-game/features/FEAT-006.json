@@ -1,0 +1,36 @@
+{
+  "id": "FEAT-006",
+  "type": "feat",
+  "description": "Add dice/cowrie shell rolling animations with sound effects to the DiceWidget. Convert from StatelessWidget to StatefulWidget with AnimationControllers, add visual feedback (glow, bounce, spin), and integrate audioplayers for sound effects.",
+  "status": "completed",
+  "steps": [
+    "Add audioplayers dependency to pubspec.yaml and create assets/sounds/ directory with WAV files",
+    "Create SoundService singleton for managing game audio playback",
+    "Add isAnimating flag to GameProvider to prevent interactions during animation",
+    "Convert DiceWidget to StatefulWidget with TickerProviderStateMixin and AnimationControllers",
+    "Implement cowrie shell flip animation with staggered timing and perspective transforms",
+    "Implement dice spin animation with random face cycling and bounce effect",
+    "Add golden glow reveal effect and bonus turn scale-pop animation",
+    "Update GameScreen to pass animation callbacks to DiceWidget",
+    "Update game_screen_test to handle animation timing",
+    "Verify all 152 tests pass and flutter analyze is clean"
+  ],
+  "acceptance_criteria": [
+    "Cowrie shells animate flipping/rotating for ~1.2 seconds before showing final result",
+    "Each shell flips independently with staggered timing offsets",
+    "Dice spins/rotates with random face cycling for ~1.2 seconds",
+    "Bounce effect on dice landing",
+    "Roll button disabled during animation",
+    "Golden glow highlight on result reveal",
+    "Bonus turn text animates in with scale pop",
+    "Sound effects play for roll, reveal, and bonus events",
+    "GameProvider.isAnimating prevents board interactions during animation",
+    "All existing tests continue to pass"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test"
+  ],
+  "blocked_reason": null,
+  "findings": "Used TickerProviderStateMixin for multiple AnimationControllers. Shell controllers use .repeat(reverse: true) during animation and are stopped on roll completion. The setTranslationRaw method was used instead of deprecated translate. pumpAndSettle cannot be used in tests with repeating animations - must use explicit pump(Duration) calls to advance through animation timeline. audioplayers 6.8.1 resolved successfully."
+}
