@@ -1,0 +1,41 @@
+{
+  "id": "FEAT-002",
+  "type": "feat",
+  "description": "Implement the complete game logic layer: board model, pawn model, dice/cowrie shell simulation, game state management, movement rules, hit detection, safe squares, inner/outer ring navigation, win condition, and turn management. This is the core engine with no UI dependency.",
+  "status": "pending",
+  "steps": [
+    "Create lib/models/board.dart - Define the 5x5 board with positions. Map each position to an index. Define the outer ring path (anti-clockwise), inner ring path (clockwise), and center (home). Mark safe squares (crossed squares at corners and midpoints of outer ring). Define start positions for each player (opposite sides).",
+    "Create lib/models/pawn.dart - Pawn class with fields: player (1 or 2), pawnIndex (0-3), position (on board, at start, or at home), stepsCompleted, hasEnteredBoard, isHome.",
+    "Create lib/models/player.dart - Player class with 4 pawns, hasHitOpponent flag (required before entering inner squares), and helper methods.",
+    "Create lib/logic/dice.dart - Two modes: (1) CowrieShell mode: simulate 4 shells, each with 50% mouth-up/down probability. Calculate value: count of mouth-up shells (1,2,3 = that value; 0 mouth-up = 8 Ashta; 4 mouth-up = 4 Chamma). (2) RegularDice mode: standard 1-6 random. Expose method to check if roll grants bonus turn (4 or 8 for cowrie, 6 for regular dice).",
+    "Create lib/logic/move_validator.dart - Validate moves: pawn can only enter board on 4 or 8; pawn cannot overshoot center; pawn cannot enter inner squares unless player has hit at least one opponent; cannot land on own pawn; hitting rules on safe squares.",
+    "Create lib/logic/board_path.dart - Define the complete path for each player: outer ring positions (anti-clockwise from player's start), transition to inner ring (clockwise), ending at center. Calculate target position given current position and dice roll.",
+    "Create lib/logic/game_state.dart - GameState class managing: current player, both players' pawns, dice mode, current roll, available moves, game phase (rolling/moving/won), turn history. Methods: rollDice(), getValidMoves(), executeMove(), checkWinCondition(), switchTurn(). Handle bonus turns for 4/8 rolls and hits.",
+    "Create lib/logic/game_controller.dart - High-level controller that orchestrates the game: initializes state, processes player actions, manages turn flow including bonus turns, determines when AI should act.",
+    "Create test/logic/dice_test.dart - Unit tests for dice: cowrie shell value calculation (all combinations), bonus turn detection, regular dice mode.",
+    "Create test/logic/move_validator_test.dart - Unit tests for move validation: entry conditions, safe square protection, inner ring access requirement, exact center landing.",
+    "Create test/logic/game_state_test.dart - Unit tests for game state: turn switching, hit mechanics, bonus turns, win condition detection.",
+    "Create test/models/board_test.dart - Unit tests for board path: verify outer ring is correct length, inner ring path, path continuity for each player.",
+    "Run flutter test to ensure all tests pass"
+  ],
+  "acceptance_criteria": [
+    "Board model correctly represents 5x5 grid with 24 outer positions, 8 inner positions, and 1 center",
+    "Cowrie shell simulation produces only valid values (1, 2, 3, 4, 8)",
+    "Pawns can only enter board on rolls of 4 or 8",
+    "Anti-clockwise outer movement and clockwise inner movement are correctly implemented",
+    "Hit detection works: landing on opponent in non-safe square sends them home and grants extra turn",
+    "Safe squares prevent hits",
+    "Inner ring access requires having hit at least one opponent",
+    "Exact landing on center required (no overshooting)",
+    "Win condition: all 4 pawns of a player at center",
+    "Bonus turns granted for rolling 4 or 8",
+    "All unit tests pass with flutter test"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test test/logic/",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test test/models/",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}
