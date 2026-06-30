@@ -2,7 +2,7 @@
   "id": "FEAT-004",
   "type": "feat",
   "description": "Implement the full UI layer using Flutter CustomPainter for the board, game screens for mode selection, and the main game screen with dice rolling, pawn selection, and turn indicators. Traditional Indian art style with warm earth tones and decorative patterns.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Create lib/ui/theme.dart - Define the traditional Indian art style theme: warm earth tones (terracotta, ochre, deep red, gold, cream), decorative borders/patterns, traditional fonts. Define color constants for player 1 (red/crimson), player 2 (blue/navy), safe squares (gold/marked with X), board background (cream/tan), board lines (dark brown).",
     "Create lib/ui/screens/home_screen.dart - Main menu with game title 'Ashta Chamma', options: 'Human vs Human', 'Human vs AI', dice mode selection (Cowrie Shells / Regular Dice). Traditional styled buttons and decorative elements.",
