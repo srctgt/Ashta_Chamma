@@ -1,5 +1,38 @@
 # Chat Log
 
+## Session: 2026-06-30 - Dice/Shell Rolling Animations & Sound Effects
+
+**Repository:** srctgt/Ashta_Chamma
+**Session Context:** Adding dice and cowrie shell rolling animations with sound effects to the game.
+
+---
+
+### 2026-06-30T20:15:00Z - Exchange 8
+
+**User:** Noticed no animations on dice/shell rolls. Requested dice and cowrie shell rolling animations with visual feedback and sound effects.
+
+**Actions taken:**
+- Converted `DiceWidget` from StatelessWidget to StatefulWidget with TickerProviderStateMixin
+- Added `AnimationController` for roll animation (1.2s), reveal glow (400ms), bonus text pop-in (500ms)
+- Added 4 individual shell flip controllers with staggered timing (150ms offset each)
+- Cowrie shell animation: shells flip/rotate independently with perspective transform and bounce effect
+- Dice animation: spinning/rotating with perspective, random face cycling that slows down, bounce on land
+- Added golden glow effect on result reveal
+- "Bonus turn!" text animates in with scale pop effect
+- Roll button shows "..." and is disabled during animation
+- Added `isAnimating` flag to `GameProvider` to prevent board interactions during animation
+- Added `audioplayers` package for sound effects
+- Created `SoundService` singleton for managing game audio
+- Generated 4 WAV sound files: dice_roll, shell_throw, result_reveal, bonus_turn
+- Updated `GameScreen` to pass animation callbacks to DiceWidget
+- Updated test to handle animation timing (pump through animation duration)
+- All 152 tests passing, flutter analyze clean
+- Updated CURRENT_STATUS.md and chat-log
+
+**Response:** Dice/cowrie shell rolling animations and sound effects added. Shells flip and bounce with staggered timing, dice spins with perspective rotation, results reveal with a golden glow, and appropriate sounds play for each action.
+
+---
+
 ## Session: 2026-06-30 - Flutter Web Support
 
 **Repository:** srctgt/Ashta_Chamma

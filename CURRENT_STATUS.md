@@ -59,6 +59,7 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 - Web platform support
 - Responsive layout for mobile and desktop browsers
 - Deploy to GitHub Pages workflow
+- Dice/cowrie shell rolling animations with sound effects
 
 ## In Progress
 
@@ -66,9 +67,9 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 
 ## Next Steps / Future Phases
 
-1. **Animations & Sound Effects** - Pawn movement animations, dice rolling animations, sound effects for moves and captures
-2. **4-Player Mode** - Expand game logic to support 4 players with appropriate board paths
-3. **Larger Board Sizes** - Support 7x7 and 9x9 board variants
+1. **4-Player Mode** - Expand game logic to support 4 players with appropriate board paths
+2. **Larger Board Sizes** - Support 7x7 and 9x9 board variants
+3. **Pawn Movement Animations** - Animate pawns sliding along board paths
 4. **Online Multiplayer** - Real-time multiplayer via Firebase or similar backend
 5. **Leaderboards & Game History** - Track wins/losses, game replays, player statistics
 
