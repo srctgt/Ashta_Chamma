@@ -7,10 +7,10 @@ import '../../logic/game_state.dart';
 import '../sound_service.dart';
 import '../theme.dart';
 
-/// Widget that displays the dice/cowrie shell area with rolling animations.
+/// Widget that displays the dice/shell area with rolling animations.
 ///
 /// Shows the current roll result and provides a roll button.
-/// For cowrie mode, displays 4 shell icons (filled = mouth up) with
+/// For shell mode, displays 4 shell icons (filled = mouth up) with
 /// flip animations when rolling.
 /// For regular dice mode, shows the dice value with dots pattern and
 /// a spinning animation when rolling.
@@ -39,6 +39,9 @@ class DiceWidget extends StatefulWidget {
   /// Callback to notify parent when animation ends.
   final VoidCallback? onAnimationEnd;
 
+  /// Whether the widget is in expanded (side panel) mode with more space.
+  final bool expanded;
+
   const DiceWidget({
     super.key,
     required this.diceResult,
@@ -49,6 +52,7 @@ class DiceWidget extends StatefulWidget {
     this.isAnimating = false,
     this.onAnimationStart,
     this.onAnimationEnd,
+    this.expanded = false,
   });
 
   @override
@@ -285,6 +289,14 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.expanded) {
+      return _buildExpandedLayout();
+    }
+    return _buildCompactLayout();
+  }
+
+  /// Compact layout for narrow screens (horizontal row).
+  Widget _buildCompactLayout() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
@@ -310,14 +322,33 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildDiceDisplay() {
+  /// Expanded layout for side panel (vertical column with more space).
+  Widget _buildExpandedLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Dice display area (larger)
+        Expanded(
+          child: Center(
+            child: _buildDiceDisplay(large: true),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Roll button (larger in expanded mode)
+        _buildRollButton(large: true),
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _buildDiceDisplay({bool large = false}) {
     if (!_isRolling && widget.diceResult == null) {
-      return const Center(
+      return Center(
         child: Text(
           'Tap Roll to start',
           style: TextStyle(
             color: AshtaChammaTheme.subtitleColor,
-            fontSize: 14,
+            fontSize: large ? 16 : 14,
           ),
         ),
       );
@@ -330,22 +361,22 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
           mainAxisSize: MainAxisSize.min,
           children: [
             // Roll value display with glow
-            _buildValueDisplay(),
-            const SizedBox(height: 4),
+            _buildValueDisplay(large: large),
+            SizedBox(height: large ? 12 : 4),
             // Shell or dice icons
             if (widget.diceMode == DiceMode.cowrieShells)
-              _buildAnimatedShellDisplay()
+              _buildAnimatedShellDisplay(large: large)
             else
-              _buildAnimatedDiceDots(),
+              _buildAnimatedDiceDots(large: large),
             // Bonus turn indicator
-            _buildBonusTurnIndicator(),
+            _buildBonusTurnIndicator(large: large),
           ],
         );
       },
     );
   }
 
-  Widget _buildValueDisplay() {
+  Widget _buildValueDisplay({bool large = false}) {
     final displayValue = _isRolling
         ? (_animatingDiceValue.toString())
         : (widget.diceResult?.value.toString() ?? '');
@@ -377,7 +408,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
                 child: Text(
                   displayValue,
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: large ? 48 : 32,
                     fontWeight: FontWeight.bold,
                     color: _isRolling
                         ? AshtaChammaTheme.deepRed.withAlpha(150)
@@ -392,10 +423,13 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildAnimatedShellDisplay() {
+  Widget _buildAnimatedShellDisplay({bool large = false}) {
     final shells = _isRolling
         ? _animatingShells
         : (widget.diceResult?.shellResults ?? [false, false, false, false]);
+
+    final shellSize = large ? 32.0 : 20.0;
+    final spacing = large ? 6.0 : 3.0;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -407,7 +441,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
             builder: (context, child) {
               final flipValue = _shellControllers[index].value;
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
+                padding: EdgeInsets.symmetric(horizontal: spacing),
                 child: Transform(
                   alignment: Alignment.center,
                   transform: Matrix4.identity()
@@ -418,7 +452,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
                       sin(flipValue * pi * 2) * 4, // bounce up/down
                       0.0,
                     ),
-                  child: _buildShellCircle(mouthUp),
+                  child: _buildShellCircle(mouthUp, size: shellSize),
                 ),
               );
             },
@@ -427,17 +461,17 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
 
         // Static shell (after animation or when no result yet)
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3),
-          child: _buildShellCircle(mouthUp),
+          padding: EdgeInsets.symmetric(horizontal: spacing),
+          child: _buildShellCircle(mouthUp, size: shellSize),
         );
       }),
     );
   }
 
-  Widget _buildShellCircle(bool mouthUp) {
+  Widget _buildShellCircle(bool mouthUp, {double size = 20}) {
     return Container(
-      width: 20,
-      height: 20,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: mouthUp ? AshtaChammaTheme.ochre : Colors.transparent,
@@ -449,7 +483,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildAnimatedDiceDots() {
+  Widget _buildAnimatedDiceDots({bool large = false}) {
     final value = _isRolling
         ? _animatingDiceValue
         : (widget.diceResult?.value ?? 1);
@@ -464,7 +498,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
               ..setEntry(3, 2, 0.002) // perspective
               ..rotateY(_spinAnimation.value * pi * 4) // spin
               ..rotateX(sin(_spinAnimation.value * pi) * 0.3), // wobble
-            child: _buildDiceBox(value),
+            child: _buildDiceBox(value, large: large),
           );
         },
       );
@@ -476,19 +510,23 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
         final scale = _rollController.isAnimating ? _bounceAnimation.value : 1.0;
         return Transform.scale(
           scale: scale,
-          child: _buildDiceBox(value),
+          child: _buildDiceBox(value, large: large),
         );
       },
     );
   }
 
-  Widget _buildDiceBox(int value) {
+  Widget _buildDiceBox(int value, {bool large = false}) {
+    final boxSize = large ? 60.0 : 40.0;
+    final dotSize = large ? 9.0 : 6.0;
+    final dotSpacing = large ? 5.0 : 3.0;
+
     return Container(
-      width: 40,
-      height: 40,
+      width: boxSize,
+      height: boxSize,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(large ? 10 : 6),
         border: Border.all(color: AshtaChammaTheme.boardLines, width: 1.5),
         boxShadow: const [
           BoxShadow(
@@ -499,21 +537,22 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
         ],
       ),
       child: Center(
-        child: _buildDotsPattern(value),
+        child: _buildDotsPattern(value, dotSize: dotSize, spacing: dotSpacing),
       ),
     );
   }
 
-  Widget _buildDotsPattern(int value) {
+  Widget _buildDotsPattern(int value,
+      {double dotSize = 6, double spacing = 3}) {
     return Wrap(
       alignment: WrapAlignment.center,
-      spacing: 3,
-      runSpacing: 3,
+      spacing: spacing,
+      runSpacing: spacing,
       children: List.generate(
         value,
         (_) => Container(
-          width: 6,
-          height: 6,
+          width: dotSize,
+          height: dotSize,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
             color: AshtaChammaTheme.textColor,
@@ -523,7 +562,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBonusTurnIndicator() {
+  Widget _buildBonusTurnIndicator({bool large = false}) {
     if (_isRolling) return const SizedBox.shrink();
 
     if (widget.diceResult?.grantsBonusTurn != true) {
@@ -537,15 +576,15 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
             ? _bonusScaleAnimation.value
             : 1.0;
         return Padding(
-          padding: const EdgeInsets.only(top: 4),
+          padding: EdgeInsets.only(top: large ? 8 : 4),
           child: Transform.scale(
             scale: scale,
-            child: const Text(
+            child: Text(
               'Bonus turn!',
               style: TextStyle(
                 color: AshtaChammaTheme.gold,
                 fontWeight: FontWeight.bold,
-                fontSize: 12,
+                fontSize: large ? 16 : 12,
               ),
             ),
           ),
@@ -554,7 +593,7 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildRollButton() {
+  Widget _buildRollButton({bool large = false}) {
     final canPress = widget.canRoll && !_isRolling && !widget.isAnimating;
 
     return ElevatedButton(
@@ -564,15 +603,18 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
             ? AshtaChammaTheme.terracotta
             : AshtaChammaTheme.terracotta.withAlpha(100),
         foregroundColor: AshtaChammaTheme.cream,
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+        padding: EdgeInsets.symmetric(
+          horizontal: large ? 36 : 24,
+          vertical: large ? 18 : 14,
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(large ? 12 : 8),
         ),
       ),
       child: Text(
         _isRolling ? '...' : 'Roll',
-        style: const TextStyle(
-          fontSize: 18,
+        style: TextStyle(
+          fontSize: large ? 22 : 18,
           fontWeight: FontWeight.bold,
         ),
       ),

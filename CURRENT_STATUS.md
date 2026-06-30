@@ -1,29 +1,44 @@
-# Current Status - Ashta Chamma (Chowka Bhara)
+# Current Status - Ashta Chamma
 
 ## Project Overview
 
-- **Project:** Ashta Chamma (Chowka Bhara) - Traditional Indian board game
+- **Project:** Ashta Chamma - Traditional Indian board game
 - **Platform:** Android, iOS & Web (Flutter)
 - **Repository:** srctgt/Ashta_Chamma
-- **Branch:** feat/ashta-chamma-game
+- **Branch:** feat/side-dice-layout
 
 ## What Has Been Built
 
 ### Core Gameplay (Complete)
 - 5x5 board with traditional layout
 - 2-player mode (pass-and-play on same device)
-- Cowrie shell + dice simulation
+- Shell + dice simulation
 - Human vs Human mode
 - Human vs AI mode (heuristic-based AI)
 - CustomPainter board rendering
 - Traditional Indian art style theme
-- 152 tests passing
+- 154 tests passing
 
 ### Web Support (Complete)
 - Flutter Web platform added (web/ directory with index.html, manifest.json, icons)
 - Responsive layout with max-width constraints for desktop browsers
 - GitHub Pages deployment workflow (.github/workflows/deploy-web.yml)
 - Auto-deploys on push to main branch
+
+### Responsive Side Dice Layout (Complete)
+- Wide screens (>=700px): Board on left, dice/info side panel on right
+- Narrow screens (<700px): Vertical layout (info top, board center, dice bottom)
+- Side panel includes: player turn info, dice/shell animation (larger), Roll button, bonus turn indicator, status messages
+- Decorative gradient top border with traditional Indian theme colors
+- Card-like container with shadow and border for visual polish
+- Dice/shell elements scale up in expanded mode for better visibility
+
+### Dice/Shell Animations (Complete)
+- Shell flip animation with staggered timing
+- Dice spin animation with perspective rotation
+- Golden glow reveal effect
+- Bonus turn scale-pop animation
+- Sound effects for roll, reveal, and bonus events
 
 ### Architecture
 
@@ -47,6 +62,7 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 | CustomPainter | Full control over board rendering and visual fidelity |
 | Heuristic-based AI | Simple, performant AI without external dependencies |
 | GitHub Pages | Free, reliable hosting for the web build |
+| LayoutBuilder responsive | Adapts layout based on screen width (700px breakpoint) |
 
 ## Completed Items
 
@@ -55,11 +71,14 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 - Human vs AI mode
 - CustomPainter board rendering
 - Traditional Indian art style theme
-- 152 unit tests
+- 154 unit and widget tests
 - Web platform support
 - Responsive layout for mobile and desktop browsers
 - Deploy to GitHub Pages workflow
-- Dice/cowrie shell rolling animations with sound effects
+- Dice/shell rolling animations with sound effects
+- Responsive side dice layout (board left, dice panel right on wide screens)
+- Removed Chowka Bhara subtitle from home screen
+- Renamed "Cowrie Shells" to "Shells" in UI
 
 ## In Progress
 

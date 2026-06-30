@@ -52,16 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 8),
-                  // Subtitle
-                  Text(
-                    'Chowka Bhara',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AshtaChammaTheme.ochre,
-                          fontStyle: FontStyle.italic,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
                   const SizedBox(height: 48),
 
                   // Dice mode toggle
@@ -89,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           segments: const [
                             ButtonSegment(
                               value: DiceMode.cowrieShells,
-                              label: Text('Cowrie Shells'),
+                              label: Text('Shells'),
                             ),
                             ButtonSegment(
                               value: DiceMode.regularDice,

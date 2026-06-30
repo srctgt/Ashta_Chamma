@@ -7,7 +7,6 @@ void main() {
     await tester.pumpWidget(const AshtaChammaApp());
 
     expect(find.text('Ashta Chamma'), findsOneWidget);
-    expect(find.text('Chowka Bhara'), findsOneWidget);
     expect(find.text('Human vs Human'), findsOneWidget);
     expect(find.text('Human vs AI'), findsOneWidget);
   });
