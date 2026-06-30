@@ -2,7 +2,7 @@
   "id": "FEAT-005",
   "type": "fix",
   "description": "Fix critical issues found during code review: AI turn infinite recursion, provider fires after dispose, copyWith cannot null fields, and entry pawns invisible to tap.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Fix GameState.copyWith to allow nulling out currentRoll and winnerId using a sentinel/clearable pattern",
     "Add a _disposed flag to GameProvider and check it before notifyListeners() in delayed callbacks; set it in dispose()",
@@ -24,5 +24,5 @@
     "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
   ],
   "blocked_reason": null,
-  "findings": null
+  "findings": "All 4 critical review issues fixed. Used sentinel (_Absent) pattern for copyWith null clearing which is type-safe and does not require changing call sites. AI turn depth capped at 10 consecutive turns via a depth parameter passed through _scheduleAiTurn. Disposed flag prevents notifyListeners after dispose. Entry pawns are now rendered semi-transparent at their start corner position. Total tests: 152 (136 existing + 16 new), all passing. flutter analyze clean."
 }
