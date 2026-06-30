@@ -1,5 +1,43 @@
 # Chat Log
 
+## Session: 2026-06-30 - Flutter Web Support
+
+**Repository:** srctgt/Ashta_Chamma
+**Session Context:** Adding Flutter Web support for online deployment as a playable website.
+
+---
+
+### 2026-06-30T19:45:00Z - Exchange 7
+
+**User:** Requested Flutter Web support so the game can be deployed as a playable website. Specifically: add web/ directory, GitHub Actions deploy workflow for GitHub Pages, responsive layout adjustments, and ensure web compatibility.
+
+**Actions taken:**
+- Added `web/` directory with index.html, manifest.json, favicon.png, and icon assets via `flutter create . --platforms web`
+- Customized index.html with proper meta tags, title, and description for Ashta Chamma
+- Customized manifest.json with game branding and theme colors
+- Created `.github/workflows/deploy-web.yml` for automatic GitHub Pages deployment on push to main
+- Added responsive layout constraints (ConstrainedBox with maxWidth) to GameScreen and HomeScreen so the game looks good on both mobile and desktop browsers
+- Verified no mobile-only APIs used (no dart:io, path_provider, etc.) -- all code is web-compatible
+- All 152 tests still passing after changes
+- Updated CURRENT_STATUS.md to reflect Web as a supported platform
+- Updated chat-log with this exchange
+
+**Response:** Flutter Web support added. The game can now be built with `flutter build web` and will auto-deploy to GitHub Pages when pushed to main.
+
+---
+
+### 2026-06-30T19:30:00Z - Exchange 6
+
+**User:** Asked about playing Ashta Chamma online virtually -- wanting to share the game with friends/family who are not in the same location.
+
+**Actions taken:**
+- Discussed options for making the game accessible online
+- Recommended Flutter Web as the simplest path since the codebase already uses web-compatible APIs (Provider, CustomPainter, Material)
+
+**Response:** Suggested adding Flutter Web support and deploying to GitHub Pages for instant online access without needing to install a mobile app.
+
+---
+
 ## Session: 2026-06-30 - Ashta Chamma project setup
 
 **Repository:** srctgt/Ashta_Chamma

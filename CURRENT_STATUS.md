@@ -3,7 +3,7 @@
 ## Project Overview
 
 - **Project:** Ashta Chamma (Chowka Bhara) - Traditional Indian board game
-- **Platform:** Android & iOS (Flutter)
+- **Platform:** Android, iOS & Web (Flutter)
 - **Repository:** srctgt/Ashta_Chamma
 - **Branch:** feat/ashta-chamma-game
 
@@ -19,6 +19,12 @@
 - Traditional Indian art style theme
 - 152 tests passing
 
+### Web Support (Complete)
+- Flutter Web platform added (web/ directory with index.html, manifest.json, icons)
+- Responsive layout with max-width constraints for desktop browsers
+- GitHub Pages deployment workflow (.github/workflows/deploy-web.yml)
+- Auto-deploys on push to main branch
+
 ### Architecture
 
 ```
@@ -27,16 +33,32 @@ lib/
   logic/        - Dice, BoardPath, MoveValidator, GameState, GameController
   ai/           - AiPlayer, MoveScorer
   ui/           - Theme, GameProvider, Screens, Widgets
+
+web/            - Flutter Web entry point (index.html, manifest.json, icons)
+.github/workflows/deploy-web.yml - GitHub Pages deployment
 ```
 
 ## Key Technical Decisions
 
 | Decision | Rationale |
 |----------|-----------|
-| Flutter | Cross-platform (Android + iOS) from single codebase |
+| Flutter | Cross-platform (Android + iOS + Web) from single codebase |
 | Provider | Lightweight state management suitable for game state |
 | CustomPainter | Full control over board rendering and visual fidelity |
 | Heuristic-based AI | Simple, performant AI without external dependencies |
+| GitHub Pages | Free, reliable hosting for the web build |
+
+## Completed Items
+
+- Core game logic with all rules
+- 2-player pass-and-play mode
+- Human vs AI mode
+- CustomPainter board rendering
+- Traditional Indian art style theme
+- 152 unit tests
+- Web platform support
+- Responsive layout for mobile and desktop browsers
+- Deploy to GitHub Pages workflow
 
 ## In Progress
 

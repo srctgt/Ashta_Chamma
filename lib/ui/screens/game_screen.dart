@@ -16,6 +16,9 @@ import '../widgets/game_info_panel.dart';
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
 
+  /// Maximum width for the game content on wide screens (desktop browsers).
+  static const double _maxContentWidth = 600;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,63 +32,68 @@ class GameScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<GameProvider>(
-        builder: (context, provider, _) {
-          return Column(
-            children: [
-              // Game info panel
-              GameInfoPanel(
-                player1: provider.gameState.player1,
-                player2: provider.gameState.player2,
-                currentPlayerId: provider.gameState.currentPlayerId,
-                statusMessage: provider.statusMessage,
-                phase: provider.gameState.phase,
-                gameMode: provider.gameMode,
-                hasBonusTurn: provider.gameState.hasBonusTurn,
-              ),
-              // Board area
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: 1.0,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return GestureDetector(
-                            onTapUp: (details) => _handleBoardTap(
-                              context,
-                              details.localPosition,
-                              constraints.biggest,
-                              provider,
-                            ),
-                            child: CustomPaint(
-                              size: constraints.biggest,
-                              painter: BoardPainter(
-                                gameState: provider.gameState,
-                                availableMoves: provider.availableMoves,
-                              ),
-                            ),
-                          );
-                        },
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: _maxContentWidth),
+          child: Consumer<GameProvider>(
+            builder: (context, provider, _) {
+              return Column(
+                children: [
+                  // Game info panel
+                  GameInfoPanel(
+                    player1: provider.gameState.player1,
+                    player2: provider.gameState.player2,
+                    currentPlayerId: provider.gameState.currentPlayerId,
+                    statusMessage: provider.statusMessage,
+                    phase: provider.gameState.phase,
+                    gameMode: provider.gameMode,
+                    hasBonusTurn: provider.gameState.hasBonusTurn,
+                  ),
+                  // Board area
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 1.0,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return GestureDetector(
+                                onTapUp: (details) => _handleBoardTap(
+                                  context,
+                                  details.localPosition,
+                                  constraints.biggest,
+                                  provider,
+                                ),
+                                child: CustomPaint(
+                                  size: constraints.biggest,
+                                  painter: BoardPainter(
+                                    gameState: provider.gameState,
+                                    availableMoves: provider.availableMoves,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              // Dice widget
-              DiceWidget(
-                diceResult: provider.diceResult,
-                diceMode: provider.diceMode,
-                canRoll: provider.isRolling && !provider.isAiTurn,
-                phase: provider.gameState.phase,
-                onRoll: () => provider.rollDice(),
-              ),
-              // Win overlay
-              if (provider.isGameOver) _buildWinBanner(provider),
-            ],
-          );
-        },
+                  // Dice widget
+                  DiceWidget(
+                    diceResult: provider.diceResult,
+                    diceMode: provider.diceMode,
+                    canRoll: provider.isRolling && !provider.isAiTurn,
+                    phase: provider.gameState.phase,
+                    onRoll: () => provider.rollDice(),
+                  ),
+                  // Win overlay
+                  if (provider.isGameOver) _buildWinBanner(provider),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }
