@@ -1,0 +1,30 @@
+{
+  "id": "FEAT-007",
+  "type": "feat",
+  "description": "Add mercy rule to dice rolling: after 5 consecutive non-entry rolls when a player needs to enter the board, force the 6th roll to be 4 or 8.",
+  "status": "in_progress",
+  "steps": [
+    "Add consecutiveNonEntryRolls tracking per player in GameController",
+    "Add mercy rule logic: when all pawns are at start and 5 consecutive non-entry rolls have occurred, force next roll to be 4 or 8",
+    "Add forceEntryRoll method to Dice class to produce a forced 4 or 8 result with correct shell patterns",
+    "Reset counter when entry value is rolled or player no longer needs entry",
+    "Only activate mercy rule when player has NO pawns on board (all at start or home)",
+    "Add unit tests for mercy rule behavior",
+    "Update CURRENT_STATUS.md and chat-log/chat-log.md"
+  ],
+  "acceptance_criteria": [
+    "After 5 consecutive non-entry rolls (1, 2, 3) when player needs entry, 6th roll is guaranteed 4 or 8",
+    "Counter resets when an entry value is finally rolled",
+    "Mercy rule only activates when player has all pawns at start (none on board)",
+    "Mercy rule applies equally to human and AI players",
+    "Shell animation shows correct pattern (all up for 4, all down for 8)",
+    "All existing tests continue to pass",
+    "New tests verify mercy rule behavior"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": null
+}

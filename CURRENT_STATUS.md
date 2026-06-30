@@ -60,6 +60,7 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 - Responsive layout for mobile and desktop browsers
 - Deploy to GitHub Pages workflow
 - Dice/cowrie shell rolling animations with sound effects
+- Mercy rule: guaranteed entry roll (4 or 8) after 5 consecutive failed attempts
 
 ## In Progress
 
