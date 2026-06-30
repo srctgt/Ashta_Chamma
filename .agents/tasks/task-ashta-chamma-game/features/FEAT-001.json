@@ -1,0 +1,29 @@
+{
+  "id": "FEAT-001",
+  "type": "chore",
+  "description": "Set up Flutter SDK and create the base Flutter project structure in /projects/sandbox/Ashta_Chamma/. Install Flutter, create the project scaffolding (lib/, test/, android/, ios/, pubspec.yaml), and verify it passes flutter analyze.",
+  "status": "completed",
+  "steps": [
+    "Install Flutter SDK by cloning https://github.com/flutter/flutter.git -b stable to /opt/flutter and add /opt/flutter/bin to PATH",
+    "Run flutter doctor to verify installation (accept Android license warnings since no SDK)",
+    "Initialize the Flutter project in /projects/sandbox/Ashta_Chamma/ by creating pubspec.yaml with appropriate dependencies (provider for state management)",
+    "Create the standard Flutter directory structure: lib/, test/, android/, ios/ directories",
+    "Create lib/main.dart with a minimal Flutter app entry point",
+    "Create the package directory structure: lib/models/, lib/logic/, lib/ui/, lib/ui/widgets/, lib/ai/",
+    "Run flutter pub get to fetch dependencies",
+    "Run flutter analyze to confirm no errors in the base project"
+  ],
+  "acceptance_criteria": [
+    "Flutter SDK is installed and functional",
+    "pubspec.yaml exists with correct project name and dependencies",
+    "lib/main.dart exists and contains a valid Flutter app entry point",
+    "flutter pub get succeeds without errors",
+    "flutter analyze passes with no errors"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test (should pass with 0 tests or basic test)"
+  ],
+  "blocked_reason": null,
+  "findings": "Flutter 3.44.4 stable installed at /opt/flutter. PATH must be set with export PATH=/opt/flutter/bin:$PATH before running flutter commands. Root user warning appears but does not affect functionality. Android/Chrome/Linux toolchain warnings are expected and do not impact flutter analyze or flutter test. pubspec.lock is gitignored per .gitignore. Build artifacts go to build/ which is also gitignored."
+}

@@ -1,0 +1,28 @@
+{
+  "id": "FEAT-005",
+  "type": "fix",
+  "description": "Fix critical issues found during code review: AI turn infinite recursion, provider fires after dispose, copyWith cannot null fields, and entry pawns invisible to tap.",
+  "status": "completed",
+  "steps": [
+    "Fix GameState.copyWith to allow nulling out currentRoll and winnerId using a sentinel/clearable pattern",
+    "Add a _disposed flag to GameProvider and check it before notifyListeners() in delayed callbacks; set it in dispose()",
+    "Add a depth cap in GameProvider._scheduleAiTurn to prevent infinite recursion on consecutive bonus turns",
+    "Render start-area pawns near their entry corner on the board so players know where to tap to enter pawns",
+    "Add tests for the new behaviors: copyWith null clearing, AI turn depth cap, dispose safety",
+    "Run flutter test and flutter analyze to verify all changes"
+  ],
+  "acceptance_criteria": [
+    "GameState.copyWith can clear currentRoll and winnerId to null",
+    "GameProvider does not call notifyListeners() after dispose",
+    "AI turns are capped at a maximum depth to prevent infinite recursion",
+    "Pawns at start positions are rendered on the board near their entry corner",
+    "All existing tests continue to pass",
+    "flutter analyze reports no issues"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": "All 4 critical review issues fixed. Used sentinel (_Absent) pattern for copyWith null clearing which is type-safe and does not require changing call sites. AI turn depth capped at 10 consecutive turns via a depth parameter passed through _scheduleAiTurn. Disposed flag prevents notifyListeners after dispose. Entry pawns are now rendered semi-transparent at their start corner position. Total tests: 152 (136 existing + 16 new), all passing. flutter analyze clean."
+}

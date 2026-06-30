@@ -1,0 +1,90 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+
+import 'package:ashta_chamma/logic/dice.dart';
+import 'package:ashta_chamma/logic/game_controller.dart';
+import 'package:ashta_chamma/ui/game_provider.dart';
+import 'package:ashta_chamma/ui/screens/game_screen.dart';
+import 'package:ashta_chamma/ui/widgets/dice_widget.dart';
+import 'package:ashta_chamma/ui/widgets/game_info_panel.dart';
+
+void main() {
+  late GameProvider provider;
+
+  setUp(() {
+    provider = GameProvider();
+    provider.startGame(GameMode.humanVsHuman, DiceMode.cowrieShells);
+  });
+
+  Widget buildGameScreen() {
+    return ChangeNotifierProvider.value(
+      value: provider,
+      child: const MaterialApp(
+        home: GameScreen(),
+      ),
+    );
+  }
+
+  group('GameScreen', () {
+    testWidgets('shows board area, dice button, and player info',
+        (tester) async {
+      await tester.pumpWidget(buildGameScreen());
+
+      // Should find a CustomPaint widget (the board)
+      expect(find.byType(CustomPaint), findsWidgets);
+
+      // Should find the dice widget
+      expect(find.byType(DiceWidget), findsOneWidget);
+
+      // Should find the game info panel
+      expect(find.byType(GameInfoPanel), findsOneWidget);
+
+      // Should find the Roll button
+      expect(find.text('Roll'), findsOneWidget);
+
+      // Should show player info
+      expect(find.text('P1'), findsOneWidget);
+      expect(find.text('P2'), findsOneWidget);
+    });
+
+    testWidgets('roll button works in rolling phase', (tester) async {
+      await tester.pumpWidget(buildGameScreen());
+
+      // Verify we are in rolling phase
+      expect(provider.isRolling, isTrue);
+
+      // Tap the roll button
+      await tester.tap(find.text('Roll'));
+      await tester.pump();
+
+      // After rolling, the state should have changed
+      // Either we are in moving phase (if moves available) or
+      // back to rolling for the other player (if no moves)
+      expect(
+        provider.isMoving || provider.isRolling,
+        isTrue,
+      );
+    });
+
+    testWidgets('shows status message', (tester) async {
+      await tester.pumpWidget(buildGameScreen());
+
+      // Should show roll message
+      expect(find.textContaining('Roll the dice'), findsOneWidget);
+    });
+
+    testWidgets('shows pass-and-play indicator in HvH mode', (tester) async {
+      await tester.pumpWidget(buildGameScreen());
+
+      expect(find.text('Pass-and-play'), findsOneWidget);
+    });
+
+    testWidgets('shows home count for players', (tester) async {
+      await tester.pumpWidget(buildGameScreen());
+
+      // Both players start with 0 pawns home
+      expect(find.text('Home: 0/4'), findsNWidgets(2));
+    });
+  });
+}

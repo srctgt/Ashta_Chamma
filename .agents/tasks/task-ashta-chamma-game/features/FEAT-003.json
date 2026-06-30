@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-003",
+  "type": "feat",
+  "description": "Implement the AI opponent with a simple heuristic-based strategy. The AI evaluates available moves and picks the best one based on priorities: hitting opponents, moving pawns closest to home, and entering new pawns.",
+  "status": "completed",
+  "steps": [
+    "Create lib/ai/ai_player.dart - AI class that receives game state and available moves, evaluates each move with a scoring heuristic, and returns the best move. Scoring priorities: (1) Hit an opponent pawn = highest score, (2) Move pawn closest to center/home = high score, (3) Enter a new pawn onto board = medium score, (4) Move pawn to a safe square = slight bonus, (5) Avoid leaving pawn vulnerable = slight bonus.",
+    "Create lib/ai/move_scorer.dart - Separate scoring logic: calculate distance to home for each pawn, detect if a move results in a hit, check if resulting position is safe, evaluate risk of being hit after move.",
+    "Create test/ai/ai_player_test.dart - Unit tests: AI prefers hitting over non-hitting moves, AI enters pawns when possible on 4/8, AI moves closest-to-home pawn when no hits available, AI handles case with no valid moves gracefully.",
+    "Run flutter test to ensure all AI tests pass"
+  ],
+  "acceptance_criteria": [
+    "AI always returns a valid move from the available moves list",
+    "AI prioritizes hitting opponent pawns when possible",
+    "AI enters new pawns on 4 or 8 rolls when beneficial",
+    "AI advances pawns closest to center when no hits available",
+    "AI handles edge cases (no valid moves, all pawns home) without crashing",
+    "All AI unit tests pass"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test test/ai/",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": "AI module created with 2 files (ai_player.dart, move_scorer.dart). GameController updated to use AiPlayer class instead of inline _selectAiMove method. Removed unused _random field from GameController. All 122 tests pass (104 existing + 18 new AI tests). flutter analyze is clean."
+}

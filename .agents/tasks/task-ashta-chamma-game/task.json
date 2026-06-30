@@ -1,0 +1,14 @@
+{
+  "task_id": "task-ashta-chamma-game",
+  "task_description": "Create a complete Ashta Chamma (Chowka Bhara) mobile game in Flutter with 5x5 board, 2-player support (HvH pass-and-play + HvAI), cowrie shell and regular dice modes, traditional Indian art style UI using CustomPainter, and simple heuristic AI opponent.",
+  "status": "completed",
+  "feature_order": ["FEAT-001", "FEAT-002", "FEAT-003", "FEAT-004"],
+  "blocked_reason": null,
+  "verification": {
+    "build": "pass",
+    "tests": "pass",
+    "test_quality": "pass",
+    "docker_build": "skipped",
+    "summary": "All 152 tests pass. flutter analyze reports no issues. Code review v2 verdict: APPROVED. All critical issues from v1 review were addressed (AI recursion cap, dispose safety, copyWith null clearing, entry pawn visibility). 3 remaining non-blocking UX polish concerns documented."
+  }
+}

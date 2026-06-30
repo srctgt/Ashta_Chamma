@@ -1,0 +1,24 @@
+{
+  "project_type": "Flutter mobile game (Android + iOS)",
+  "language": "Dart",
+  "build_system": "Flutter SDK with pub package manager",
+  "test_framework": "flutter_test (built-in), widget tests and unit tests",
+  "build_command": "flutter build apk --debug (Android) or flutter analyze for lint",
+  "test_command": "flutter test",
+  "verification_instructions": "1. Run flutter analyze to check for lint errors. 2. Run flutter test to run all unit and widget tests. 3. Verify project structure matches Flutter conventions.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "1. Install Flutter SDK via git clone. 2. Add to PATH. 3. Run flutter doctor. 4. Run flutter pub get in project directory.",
+  "environment_constraints": "Linux x86_64 Amazon Linux 2023. No Android SDK/emulator available - cannot run app or build APK. Can run flutter analyze and flutter test. Flutter must be installed from scratch. Java 25 available.",
+  "contribution_requirements": "Standard Flutter project conventions. Clean separation of game logic, UI, and AI modules.",
+  "key_patterns": "CustomPainter for board rendering, Provider or similar for state management, separate directories for models, logic, ui, and ai",
+  "relevant_files": [
+    "lib/main.dart",
+    "lib/models/",
+    "lib/logic/",
+    "lib/ui/",
+    "lib/ai/",
+    "pubspec.yaml",
+    "test/"
+  ],
+  "directory_structure": "Standard Flutter project: lib/ (source), test/ (tests), android/ (Android config), ios/ (iOS config), pubspec.yaml (dependencies)"
+}

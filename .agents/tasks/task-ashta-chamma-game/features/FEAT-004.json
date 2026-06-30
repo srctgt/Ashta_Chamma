@@ -1,0 +1,40 @@
+{
+  "id": "FEAT-004",
+  "type": "feat",
+  "description": "Implement the full UI layer using Flutter CustomPainter for the board, game screens for mode selection, and the main game screen with dice rolling, pawn selection, and turn indicators. Traditional Indian art style with warm earth tones and decorative patterns.",
+  "status": "completed",
+  "steps": [
+    "Create lib/ui/theme.dart - Define the traditional Indian art style theme: warm earth tones (terracotta, ochre, deep red, gold, cream), decorative borders/patterns, traditional fonts. Define color constants for player 1 (red/crimson), player 2 (blue/navy), safe squares (gold/marked with X), board background (cream/tan), board lines (dark brown).",
+    "Create lib/ui/screens/home_screen.dart - Main menu with game title 'Ashta Chamma', options: 'Human vs Human', 'Human vs AI', dice mode selection (Cowrie Shells / Regular Dice). Traditional styled buttons and decorative elements.",
+    "Create lib/ui/widgets/board_painter.dart - CustomPainter that draws the 5x5 board: outer ring of squares, inner ring of squares, center square. Mark safe/crossed squares with X pattern. Draw in traditional style with warm colors, decorative borders on safe squares. Handle tap detection to identify which square was tapped.",
+    "Create lib/ui/widgets/pawn_widget.dart - Visual representation of pawns. Each player has distinct color. Show pawn count when multiple pawns stack on same square. Highlight movable pawns when it's selection time.",
+    "Create lib/ui/widgets/dice_widget.dart - Display area for dice/cowrie shells. Show current roll value prominently. For cowrie mode, show 4 shell icons (mouth up/down). For regular dice, show dice face. Include 'Roll' button.",
+    "Create lib/ui/widgets/game_info_panel.dart - Show current player turn, player scores (pawns home), game status messages (e.g., 'Roll 4 or 8 to enter a pawn', 'Bonus turn!', 'Player 1 wins!').",
+    "Create lib/ui/screens/game_screen.dart - Main game screen combining: board (center, takes most space), dice widget (bottom), game info panel (top), pawn selection highlighting. Wire up to GameController: handle dice rolls, show valid moves, process pawn selection, handle AI turns with brief delay.",
+    "Create lib/ui/game_provider.dart - State management using ChangeNotifier/Provider pattern. Expose game state to UI, handle user interactions (roll dice, select pawn, select move), trigger AI moves, notify UI of state changes.",
+    "Update lib/main.dart - Set up Provider, configure theme, set HomeScreen as entry point, configure app metadata (title, theme).",
+    "Create test/ui/board_painter_test.dart - Widget test that the board painter renders without errors and handles tap positions correctly.",
+    "Create test/ui/game_screen_test.dart - Widget test for game screen: verify it shows board, dice area, player info; verify roll button triggers dice roll.",
+    "Run flutter test to ensure all tests pass",
+    "Run flutter analyze to ensure no lint errors"
+  ],
+  "acceptance_criteria": [
+    "Home screen displays with game mode options (HvH, HvAI) and dice mode selection",
+    "Board is rendered using CustomPainter with 5x5 grid, marked safe squares, and traditional styling",
+    "Pawns are displayed at correct positions on the board with player-distinguishing colors",
+    "Dice/cowrie shell display shows roll values correctly",
+    "Players can tap to roll dice and select pawns to move",
+    "Turn indicator clearly shows whose turn it is",
+    "AI opponent plays automatically with a brief delay when in HvAI mode",
+    "Game announces winner when win condition is met",
+    "Pass-and-play works in HvH mode (prompts turn switch)",
+    "All widget tests pass",
+    "flutter analyze passes with no errors"
+  ],
+  "verification": [
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter test",
+    "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": "All 136 tests pass (122 existing + 14 new UI tests). Flutter analyze reports no issues. Widget test updated since main.dart HomeScreen was replaced. Board painter uses CustomPainter with tap detection via static method. Provider pattern used for state management. AI turn scheduling via Future.delayed with 500ms delay."
+}
