@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../ai/ai_player.dart';
 import '../models/pawn.dart';
 import 'dice.dart';
 import 'game_state.dart';
@@ -32,15 +33,15 @@ class GameController {
   /// The AI player ID (always player 2 in HumanVsAi mode).
   final int aiPlayerId = 2;
 
-  /// Random instance for the controller.
-  final Random _random;
+  /// The AI player instance.
+  final AiPlayer _aiPlayer;
 
   GameController({
     DiceMode diceMode = DiceMode.cowrieShells,
     this.gameMode = GameMode.humanVsHuman,
     Random? random,
   })  : _dice = Dice(mode: diceMode, random: random),
-        _random = random ?? Random(),
+        _aiPlayer = AiPlayer(random: random),
         _state = GameState.initial(diceMode: diceMode);
 
   /// Creates a controller with a specific initial state (for testing).
@@ -50,7 +51,7 @@ class GameController {
     Random? random,
   })  : _state = state,
         _dice = Dice(mode: state.diceMode, random: random),
-        _random = random ?? Random();
+        _aiPlayer = AiPlayer(random: random);
 
   /// The current game state (read-only).
   GameState get state => _state;
@@ -138,50 +139,17 @@ class GameController {
     }
 
     if (_state.phase == GamePhase.moving && _state.availableMoves.isNotEmpty) {
-      final move = _selectAiMove(_state.availableMoves);
-      _state = _state.executeMove(move);
+      final move = _aiPlayer.selectMove(
+        availableMoves: _state.availableMoves,
+        currentPlayer: _state.currentPlayer,
+        opponent: _state.opponent,
+      );
+      if (move != null) {
+        _state = _state.executeMove(move);
+      }
     }
 
     return true;
-  }
-
-  /// Selects the best move for the AI using simple heuristics.
-  ///
-  /// Priority order:
-  /// 1. Hit an opponent pawn (aggressive play)
-  /// 2. Move a pawn home if possible
-  /// 3. Move the pawn closest to home (advance furthest pawn)
-  /// 4. Enter a new pawn onto the board
-  /// 5. Random valid move
-  Move _selectAiMove(List<Move> moves) {
-    // Priority 1: Hit opponent
-    final hitMoves = moves.where((m) => m.isHit).toList();
-    if (hitMoves.isNotEmpty) {
-      return hitMoves[_random.nextInt(hitMoves.length)];
-    }
-
-    // Priority 2: Reach home
-    final homeMoves = moves.where((m) => m.reachesHome).toList();
-    if (homeMoves.isNotEmpty) {
-      return homeMoves[_random.nextInt(homeMoves.length)];
-    }
-
-    // Priority 3: Move furthest pawn (closest to home)
-    final boardMoves =
-        moves.where((m) => !m.isEntry && !m.reachesHome).toList();
-    if (boardMoves.isNotEmpty) {
-      boardMoves.sort((a, b) => b.targetStep.compareTo(a.targetStep));
-      return boardMoves.first;
-    }
-
-    // Priority 4: Enter a new pawn
-    final entryMoves = moves.where((m) => m.isEntry).toList();
-    if (entryMoves.isNotEmpty) {
-      return entryMoves[_random.nextInt(entryMoves.length)];
-    }
-
-    // Fallback: random
-    return moves[_random.nextInt(moves.length)];
   }
 
   /// Resets the game to initial state.
