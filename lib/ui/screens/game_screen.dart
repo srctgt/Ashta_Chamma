@@ -85,7 +85,14 @@ class GameScreen extends StatelessWidget {
                     diceMode: provider.diceMode,
                     canRoll: provider.isRolling && !provider.isAiTurn,
                     phase: provider.gameState.phase,
+                    isAnimating: provider.isAnimating,
                     onRoll: () => provider.rollDice(),
+                    onAnimationStart: () {
+                      provider.isAnimating = true;
+                    },
+                    onAnimationEnd: () {
+                      provider.isAnimating = false;
+                    },
                   ),
                   // Win overlay
                   if (provider.isGameOver) _buildWinBanner(provider),
