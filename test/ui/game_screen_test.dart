@@ -54,11 +54,15 @@ void main() {
       // Verify we are in rolling phase
       expect(provider.isRolling, isTrue);
 
-      // Tap the roll button
+      // Tap the roll button (starts animation)
       await tester.tap(find.text('Roll'));
-      await tester.pump();
+      await tester.pump(); // trigger first frame
+      // Advance past the roll animation (1200ms) + reveal (400ms) + bonus (500ms)
+      await tester.pump(const Duration(milliseconds: 1300));
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pump(const Duration(milliseconds: 200));
 
-      // After rolling, the state should have changed
+      // After rolling animation completes, the actual roll logic fires.
       // Either we are in moving phase (if moves available) or
       // back to rolling for the other player (if no moves)
       expect(

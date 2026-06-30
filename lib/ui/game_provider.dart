@@ -19,6 +19,9 @@ class GameProvider extends ChangeNotifier {
   /// Whether this provider has been disposed.
   bool _disposed = false;
 
+  /// Whether a dice/shell animation is currently playing.
+  bool _isAnimating = false;
+
   /// Maximum number of consecutive AI turns before forcing a stop.
   /// This prevents infinite recursion in degenerate bonus-turn streaks.
   static const int maxConsecutiveAiTurns = 10;
@@ -50,6 +53,17 @@ class GameProvider extends ChangeNotifier {
 
   /// Whether it is the AI's turn.
   bool get isAiTurn => _controller?.isAiTurn ?? false;
+
+  /// Whether a dice/shell animation is currently playing.
+  bool get isAnimating => _isAnimating;
+
+  /// Sets the animation state. Called by the DiceWidget.
+  set isAnimating(bool value) {
+    if (_isAnimating != value) {
+      _isAnimating = value;
+      notifyListeners();
+    }
+  }
 
   /// The winner ID, or null.
   int? get winnerId => gameState.winnerId;
@@ -101,7 +115,7 @@ class GameProvider extends ChangeNotifier {
 
   /// Rolls the dice for the current player.
   void rollDice() {
-    if (_controller == null || !isRolling || isAiTurn) return;
+    if (_controller == null || !isRolling || isAiTurn || _isAnimating) return;
 
     _controller!.rollDice();
     notifyListeners();
@@ -115,7 +129,7 @@ class GameProvider extends ChangeNotifier {
 
   /// Selects a pawn to move by pawn index.
   void selectPawn(int pawnIndex) {
-    if (_controller == null || !isMoving || isAiTurn) return;
+    if (_controller == null || !isMoving || isAiTurn || _isAnimating) return;
 
     // Check if this pawn has a valid move
     final hasMove = availableMoves.any((m) => m.pawn.pawnIndex == pawnIndex);
