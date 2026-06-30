@@ -1,5 +1,36 @@
 # Chat Log
 
+## Session: 2026-06-30 - Side Dice Layout & UI Cleanup
+
+**Repository:** srctgt/Ashta_Chamma
+**Session Context:** Moving the dice/shell animation from bottom of the game screen to a side panel for better use of horizontal space on desktop/web.
+
+---
+
+### 2026-06-30T21:00:00Z - Exchange 9
+
+**User:** Move the dice/shell animation from the bottom to the SIDE of the board. On wide screens (>=700px) use a Row layout with board on left and dice/info panel on right. On narrow screens keep the current vertical layout. Also: remove the "Chowka Bhara" label and change "Cowrie Shells" to just "Shells".
+
+**Actions taken:**
+- Rewrote `GameScreen` with responsive layout using `LayoutBuilder` (700px breakpoint)
+- Wide layout: `Row` with board area (flex 3) on left, 280px side panel on right
+- Narrow layout: original `Column` layout preserved (info top, board center, dice bottom)
+- Side panel includes: decorative gradient top border, player turn info with pawn indicator, bonus turn badge, player scores, dice/shell animation area (expanded), Roll button (larger), status messages
+- Added `expanded` parameter to `DiceWidget` for larger display in side panel mode
+- Scaled up shell circles (32px vs 20px), dice box (60px vs 40px), dots, value text, roll button in expanded mode
+- Used `Flexible` widgets to prevent overflow in constrained side panel
+- Removed "Chowka Bhara" subtitle from `HomeScreen`
+- Renamed "Cowrie Shells" to "Shells" in the dice mode toggle on `HomeScreen`
+- Updated `widget_test.dart` to remove "Chowka Bhara" expectation
+- Rewrote `game_screen_test.dart` with explicit viewport sizes for both narrow and wide layout tests
+- Added 2 new tests for wide layout (board + side panel rendering, roll button in wide mode)
+- All 154 tests passing, flutter analyze clean
+- Updated CURRENT_STATUS.md and chat-log
+
+**Response:** Dice/shell animation now appears in a side panel on wide screens (desktop/web) with larger, more prominent display. On narrow screens (mobile) the original vertical layout is preserved. Removed "Chowka Bhara" label and renamed "Cowrie Shells" to "Shells".
+
+---
+
 ## Session: 2026-06-30 - Dice/Shell Rolling Animations & Sound Effects
 
 **Repository:** srctgt/Ashta_Chamma
