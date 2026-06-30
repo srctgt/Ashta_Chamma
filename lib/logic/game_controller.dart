@@ -36,6 +36,14 @@ class GameController {
   /// The AI player instance.
   final AiPlayer _aiPlayer;
 
+  /// Tracks consecutive non-entry rolls per player.
+  /// Key is the player ID, value is the number of consecutive failed rolls.
+  final Map<int, int> _consecutiveNonEntryRolls = {1: 0, 2: 0};
+
+  /// The number of consecutive failed entry attempts before the mercy rule
+  /// forces an entry roll.
+  static const int mercyRuleThreshold = 5;
+
   GameController({
     DiceMode diceMode = DiceMode.cowrieShells,
     this.gameMode = GameMode.humanVsHuman,
@@ -73,7 +81,12 @@ class GameController {
       return null;
     }
 
-    final result = _dice.roll();
+    final playerId = _state.currentPlayerId;
+    final result = _shouldApplyMercyRule(playerId)
+        ? _dice.forceEntryRoll()
+        : _dice.roll();
+
+    _updateMercyCounter(playerId, result);
     _state = _state.rollDice(result);
     return result;
   }
@@ -84,6 +97,8 @@ class GameController {
       return null;
     }
 
+    final playerId = _state.currentPlayerId;
+    _updateMercyCounter(playerId, result);
     _state = _state.rollDice(result);
     return result;
   }
@@ -155,5 +170,57 @@ class GameController {
   /// Resets the game to initial state.
   void reset({DiceMode? diceMode}) {
     _state = GameState.initial(diceMode: diceMode ?? _state.diceMode);
+    _consecutiveNonEntryRolls[1] = 0;
+    _consecutiveNonEntryRolls[2] = 0;
+  }
+
+  /// Whether the mercy rule should activate for this player.
+  ///
+  /// The mercy rule applies when:
+  /// 1. The player has no pawns on the board (only at start or at home)
+  /// 2. The player has pawns at start that need to enter
+  /// 3. The player has failed [mercyRuleThreshold] consecutive times
+  bool _shouldApplyMercyRule(int playerId) {
+    final player = _state.getPlayer(playerId);
+
+    // Player must have pawns waiting to enter
+    if (player.pawnsAtStart == 0) return false;
+
+    // Mercy rule only applies when NO pawns are on the board.
+    // If the player has pawns on board, they can still use 1/2/3 to move them.
+    if (player.pawnsOnBoard > 0) return false;
+
+    return (_consecutiveNonEntryRolls[playerId] ?? 0) >= mercyRuleThreshold;
+  }
+
+  /// Whether the current player needs an entry roll.
+  ///
+  /// A player needs entry when they have pawns at start and none on board.
+  bool _playerNeedsEntry(int playerId) {
+    final player = _state.getPlayer(playerId);
+    return player.pawnsAtStart > 0 && player.pawnsOnBoard == 0;
+  }
+
+  /// Updates the mercy counter based on the roll result.
+  void _updateMercyCounter(int playerId, DiceResult result) {
+    if (!_playerNeedsEntry(playerId)) {
+      // Player does not need entry, reset counter
+      _consecutiveNonEntryRolls[playerId] = 0;
+      return;
+    }
+
+    if (result.allowsEntry) {
+      // Got an entry value, reset counter
+      _consecutiveNonEntryRolls[playerId] = 0;
+    } else {
+      // Failed to get entry, increment counter
+      _consecutiveNonEntryRolls[playerId] =
+          (_consecutiveNonEntryRolls[playerId] ?? 0) + 1;
+    }
+  }
+
+  /// Returns the consecutive non-entry roll count for a player (for testing).
+  int getConsecutiveNonEntryRolls(int playerId) {
+    return _consecutiveNonEntryRolls[playerId] ?? 0;
   }
 }

@@ -1,5 +1,33 @@
 # Chat Log
 
+## Session: 2026-06-30 - Mercy Rule for Dice Rolling
+
+**Repository:** srctgt/Ashta_Chamma
+**Session Context:** Adding a mercy rule to guarantee entry rolls after repeated failed attempts.
+
+---
+
+### 2026-06-30T21:15:00Z - Exchange 10
+
+**User:** Reported difficulty getting proper entry rolls (4 or 8) to enter the board after multiple attempts. Requested a "mercy rule" that guarantees an entry roll after 5 consecutive failures.
+
+**Actions taken:**
+- Added `forceEntryRoll()` method to `Dice` class that randomly produces 4 (all shells mouth up) or 8 (all shells mouth down)
+- Added mercy rule tracking in `GameController` with `_consecutiveNonEntryRolls` map per player
+- Mercy rule activates when: player has pawns at start, no pawns on board, and 5 consecutive non-entry rolls have occurred
+- On the 6th roll, the result is forced to be 4 or 8 (randomly chosen)
+- Counter resets when an entry value is rolled or when the player no longer needs entry (has pawns on board)
+- Mercy rule applies equally to human and AI players
+- Shell animations show correct patterns: all up for 4 (Chamma), all down for 8 (Ashta)
+- Regular dice mode forces a 6 under the same conditions
+- Added 14 new unit tests covering all mercy rule behaviors
+- All 166 tests passing, flutter analyze clean
+- Updated CURRENT_STATUS.md and chat-log
+
+**Response:** Mercy rule implemented. After 5 consecutive failed entry attempts, the 6th roll is guaranteed to produce either 4 (Chamma) or 8 (Ashta), chosen randomly. The rule only activates when the player has no pawns on the board that could move with lower values.
+
+---
+
 ## Session: 2026-06-30 - Side Dice Layout & UI Cleanup
 
 **Repository:** srctgt/Ashta_Chamma

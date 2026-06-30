@@ -79,6 +79,7 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 - Responsive side dice layout (board left, dice panel right on wide screens)
 - Removed Chowka Bhara subtitle from home screen
 - Renamed "Cowrie Shells" to "Shells" in UI
+- Mercy rule: guaranteed entry roll (4 or 8) after 5 consecutive failed attempts
 
 ## In Progress
 
