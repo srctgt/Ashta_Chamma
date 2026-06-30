@@ -192,10 +192,17 @@ class BoardPainter extends CustomPainter {
   void _collectPawnPositions(
       Player player, Map<String, List<_PawnInfo>> positions) {
     for (final pawn in player.pawns) {
-      if (pawn.state == PawnState.atStart || pawn.state == PawnState.atHome) {
+      if (pawn.state == PawnState.atHome) {
         continue;
       }
-      final pos = BoardPath.getPositionAtStep(pawn.player, pawn.stepsCompleted);
+
+      BoardPosition? pos;
+      if (pawn.state == PawnState.atStart) {
+        // Render start pawns at their entry corner so players can tap them
+        pos = Board.startPosition(pawn.player);
+      } else {
+        pos = BoardPath.getPositionAtStep(pawn.player, pawn.stepsCompleted);
+      }
       if (pos == null) continue;
 
       final key = '${pos.row},${pos.col}';
@@ -206,6 +213,7 @@ class BoardPainter extends CustomPainter {
         player: pawn.player,
         pawnIndex: pawn.pawnIndex,
         isMovable: _isPawnMovable(pawn),
+        isAtStart: pawn.state == PawnState.atStart,
       ));
     }
   }
@@ -217,9 +225,13 @@ class BoardPainter extends CustomPainter {
 
   void _drawSinglePawn(
       Canvas canvas, double cx, double cy, double radius, _PawnInfo pawn) {
-    final color = pawn.player == 1
+    final baseColor = pawn.player == 1
         ? AshtaChammaTheme.player1Color
         : AshtaChammaTheme.player2Color;
+
+    // Pawns at start are rendered semi-transparent to distinguish from
+    // on-board pawns while still providing a visible tap target.
+    final color = pawn.isAtStart ? baseColor.withAlpha(160) : baseColor;
 
     final fillPaint = Paint()..color = color;
     canvas.drawCircle(Offset(cx, cy), radius, fillPaint);
@@ -230,6 +242,16 @@ class BoardPainter extends CustomPainter {
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(Offset(cx, cy), radius, borderPaint);
+
+    // Draw a dashed-style inner ring for at-start pawns to indicate they
+    // need to be entered onto the board
+    if (pawn.isAtStart) {
+      final innerPaint = Paint()
+        ..color = Colors.white.withAlpha(180)
+        ..strokeWidth = 1.5
+        ..style = PaintingStyle.stroke;
+      canvas.drawCircle(Offset(cx, cy), radius * 0.6, innerPaint);
+    }
 
     // Highlight if movable
     if (pawn.isMovable && gameState.phase == GamePhase.moving) {
@@ -338,6 +360,7 @@ class _PawnInfo {
   final int player;
   final int pawnIndex;
   final bool isMovable;
+  final bool isAtStart;
 
   const _PawnInfo({
     required this.row,
@@ -345,5 +368,6 @@ class _PawnInfo {
     required this.player,
     required this.pawnIndex,
     required this.isMovable,
+    this.isAtStart = false,
   });
 }

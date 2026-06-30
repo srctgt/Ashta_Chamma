@@ -16,6 +16,13 @@ import '../models/player.dart';
 class GameProvider extends ChangeNotifier {
   GameController? _controller;
 
+  /// Whether this provider has been disposed.
+  bool _disposed = false;
+
+  /// Maximum number of consecutive AI turns before forcing a stop.
+  /// This prevents infinite recursion in degenerate bonus-turn streaks.
+  static const int maxConsecutiveAiTurns = 10;
+
   /// The current game state.
   GameState get gameState =>
       _controller?.state ?? GameState.initial();
@@ -124,29 +131,45 @@ class GameProvider extends ChangeNotifier {
   }
 
   /// Performs the AI turn with a delay for natural feel.
-  void _scheduleAiTurn() {
+  void _scheduleAiTurn([int depth = 0]) {
+    if (depth >= maxConsecutiveAiTurns) return;
     Future.delayed(const Duration(milliseconds: 500), () {
-      if (_controller == null || isGameOver) return;
-      performAiTurn();
+      if (_disposed || _controller == null || isGameOver) return;
+      _performAiTurnWithDepth(depth);
     });
   }
 
   /// Performs the AI's turn immediately.
   void performAiTurn() {
-    if (_controller == null || !isAiTurn || isGameOver) return;
+    _performAiTurnWithDepth(0);
+  }
+
+  /// Internal: performs AI turn with depth tracking.
+  void _performAiTurnWithDepth(int depth) {
+    if (_disposed || _controller == null || !isAiTurn || isGameOver) return;
+    if (depth >= maxConsecutiveAiTurns) return;
 
     _controller!.performAiTurn();
+    if (_disposed) return;
     notifyListeners();
 
     // AI may get a bonus turn
     if (isAiTurn && !isGameOver) {
-      _scheduleAiTurn();
+      _scheduleAiTurn(depth + 1);
     }
   }
 
   /// Resets the game to initial state.
   void resetGame() {
     _controller?.reset();
-    notifyListeners();
+    if (!_disposed) {
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 }

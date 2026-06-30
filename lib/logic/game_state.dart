@@ -4,6 +4,15 @@ import 'board_path.dart';
 import 'dice.dart';
 import 'move_validator.dart';
 
+/// Sentinel value used by [GameState.copyWith] to explicitly clear a nullable
+/// field back to null. Without this, passing `null` to copyWith would be
+/// indistinguishable from "keep the existing value".
+const Object _absent = _Absent();
+
+class _Absent {
+  const _Absent();
+}
+
 /// Represents the current phase of the game.
 enum GamePhase {
   /// Waiting for a dice roll.
@@ -237,15 +246,19 @@ class GameState {
   }
 
   /// Creates a copy of this state with optional field changes.
+  ///
+  /// For nullable fields [currentRoll] and [winnerId], pass [clearCurrentRoll]
+  /// or [clearWinnerId] as `true` to explicitly set them to null.
+  /// Otherwise, passing `null` (the default) preserves the existing value.
   GameState copyWith({
     Player? player1,
     Player? player2,
     int? currentPlayerId,
     DiceMode? diceMode,
-    DiceResult? currentRoll,
+    Object? currentRoll = _absent,
     List<Move>? availableMoves,
     GamePhase? phase,
-    int? winnerId,
+    Object? winnerId = _absent,
     bool? hasBonusTurn,
     int? consecutiveBonusTurns,
   }) {
@@ -254,10 +267,12 @@ class GameState {
       player2: player2 ?? this.player2,
       currentPlayerId: currentPlayerId ?? this.currentPlayerId,
       diceMode: diceMode ?? this.diceMode,
-      currentRoll: currentRoll ?? this.currentRoll,
+      currentRoll: currentRoll is _Absent
+          ? this.currentRoll
+          : currentRoll as DiceResult?,
       availableMoves: availableMoves ?? this.availableMoves,
       phase: phase ?? this.phase,
-      winnerId: winnerId ?? this.winnerId,
+      winnerId: winnerId is _Absent ? this.winnerId : winnerId as int?,
       hasBonusTurn: hasBonusTurn ?? this.hasBonusTurn,
       consecutiveBonusTurns:
           consecutiveBonusTurns ?? this.consecutiveBonusTurns,
