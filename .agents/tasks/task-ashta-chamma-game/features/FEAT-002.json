@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Implement the complete game logic layer: board model, pawn model, dice/cowrie shell simulation, game state management, movement rules, hit detection, safe squares, inner/outer ring navigation, win condition, and turn management. This is the core engine with no UI dependency.",
-  "status": "pending",
+  "status": "in_progress",
   "steps": [
     "Create lib/models/board.dart - Define the 5x5 board with positions. Map each position to an index. Define the outer ring path (anti-clockwise), inner ring path (clockwise), and center (home). Mark safe squares (crossed squares at corners and midpoints of outer ring). Define start positions for each player (opposite sides).",
     "Create lib/models/pawn.dart - Pawn class with fields: player (1 or 2), pawnIndex (0-3), position (on board, at start, or at home), stepsCompleted, hasEnteredBoard, isHome.",
