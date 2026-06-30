@@ -2,7 +2,7 @@
   "id": "FEAT-002",
   "type": "feat",
   "description": "Implement the complete game logic layer: board model, pawn model, dice/cowrie shell simulation, game state management, movement rules, hit detection, safe squares, inner/outer ring navigation, win condition, and turn management. This is the core engine with no UI dependency.",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Create lib/models/board.dart - Define the 5x5 board with positions. Map each position to an index. Define the outer ring path (anti-clockwise), inner ring path (clockwise), and center (home). Mark safe squares (crossed squares at corners and midpoints of outer ring). Define start positions for each player (opposite sides).",
     "Create lib/models/pawn.dart - Pawn class with fields: player (1 or 2), pawnIndex (0-3), position (on board, at start, or at home), stepsCompleted, hasEnteredBoard, isHome.",
@@ -37,5 +37,5 @@
     "Run: export PATH=/opt/flutter/bin:$PATH && cd /projects/sandbox/Ashta_Chamma && flutter analyze"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All game logic implemented with 104 passing tests. Board uses a 5x5 grid with 16 outer ring positions (perimeter), 8 inner ring positions, and 1 center (home). Player 1 starts at (4,0) outer ring index 12, Player 2 starts at (0,4) outer ring index 4. Paths go anti-clockwise on outer ring then clockwise on inner ring. Inner ring entry for Player 1 is at inner index 0 (1,1), for Player 2 at inner index 4 (3,3). Safe squares are the 4 corners and 4 midpoints of the outer ring (8 total). The game controller includes AI with priority-based move selection."
 }
