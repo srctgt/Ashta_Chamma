@@ -1,0 +1,25 @@
+{
+  "id": "FEAT-008",
+  "type": "fix",
+  "description": "Fix critical bug: pawns don't move after rolling 4 or 8. The rollDice() guard checks _isAnimating which is still true when onRoll fires, silently blocking the roll.",
+  "status": "completed",
+  "steps": [
+    "In game_provider.dart, remove || _isAnimating from the rollDice() method guard (keep it in selectPawn())",
+    "In dice_widget.dart, call widget.onAnimationEnd before widget.onRoll in _onRollAnimationStatus for correctness",
+    "Update CURRENT_STATUS.md to note the critical bug fix",
+    "Prepend this exchange to chat-log/chat-log.md"
+  ],
+  "acceptance_criteria": [
+    "rollDice() no longer checks _isAnimating and will execute the roll when called from animation completion",
+    "onAnimationEnd is called before onRoll in _onRollAnimationStatus so isAnimating is cleared first",
+    "selectPawn() still checks _isAnimating to prevent pawn selection during animation",
+    "All existing tests continue to pass",
+    "flutter analyze reports no issues"
+  ],
+  "verification": [
+    "Run: flutter test",
+    "Run: flutter analyze"
+  ],
+  "blocked_reason": null,
+  "findings": "Fix confirmed working. Removed _isAnimating from rollDice() guard and reordered callbacks in _onRollAnimationStatus. All 154 tests pass, flutter analyze clean. The root cause was a timing issue: onRoll fired while isAnimating was still true, and the guard silently blocked the roll."
+}
