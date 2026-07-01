@@ -80,6 +80,13 @@ web/            - Flutter Web entry point (index.html, manifest.json, icons)
 - Removed Chowka Bhara subtitle from home screen
 - Renamed "Cowrie Shells" to "Shells" in UI
 
+## Critical Bug Fixes
+
+### Dice Roll Blocked by Animation Guard (Fixed)
+- **Bug:** Pawns never moved after rolling 4 or 8. The game appeared stuck in the rolling phase.
+- **Root Cause:** In `_onRollAnimationStatus` (dice_widget.dart), `widget.onRoll?.call()` was called while `isAnimating` was still `true`. But `provider.rollDice()` (game_provider.dart) had a guard `if (... || _isAnimating) return;` that silently blocked the roll. The `onAnimationEnd` callback (which clears `isAnimating`) was called AFTER `onRoll`, so the roll never executed.
+- **Fix:** (1) Removed `_isAnimating` from `rollDice()` guard since the disabled Roll button already prevents double-taps during animation. Kept `_isAnimating` check in `selectPawn()` to prevent pawn selection during reveal. (2) Reordered callbacks in `_onRollAnimationStatus` so `onAnimationEnd` fires before `onRoll` for logical correctness.
+
 ## In Progress
 
 - Nothing currently in progress

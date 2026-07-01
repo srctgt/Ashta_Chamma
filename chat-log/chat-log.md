@@ -1,5 +1,27 @@
 # Chat Log
 
+## Session: 2026-06-30 - Critical Bug Fix: Dice Roll Blocked by Animation
+
+**Repository:** srctgt/Ashta_Chamma
+**Session Context:** Fixing a critical bug where pawns never move after rolling 4 or 8 due to a race condition between the animation state and the roll execution guard.
+
+---
+
+### 2026-06-30T22:00:00Z - Exchange 10
+
+**User:** Fix the bug where pawns don't move after rolling a 4 or 8. The game is not working properly -- even when the number is 4, the pawns are not moving.
+
+**Actions taken:**
+- Identified root cause: `_onRollAnimationStatus` in `dice_widget.dart` calls `widget.onRoll?.call()` (which triggers `provider.rollDice()`) while `isAnimating` is still `true`. The `rollDice()` method in `game_provider.dart` has a guard `if (... || _isAnimating) return;` that silently blocks the roll. The `onAnimationEnd` callback that clears `isAnimating` was called AFTER `onRoll`, so the roll never executed.
+- Fixed `game_provider.dart`: Removed `|| _isAnimating` from the `rollDice()` guard. The disabled Roll button already prevents double-taps during animation. Kept `_isAnimating` in `selectPawn()` to prevent pawn selection during reveal.
+- Fixed `dice_widget.dart`: Reordered callbacks in `_onRollAnimationStatus` so `widget.onAnimationEnd?.call()` fires BEFORE `widget.onRoll?.call()`, ensuring `isAnimating` is cleared before roll logic runs.
+- Updated CURRENT_STATUS.md with bug fix documentation
+- All tests passing, flutter analyze clean
+
+**Response:** Critical bug fixed. Pawns now correctly move after rolling 4 or 8. The issue was a timing/ordering problem between animation state management and the roll execution guard.
+
+---
+
 ## Session: 2026-06-30 - Side Dice Layout & UI Cleanup
 
 **Repository:** srctgt/Ashta_Chamma

@@ -214,14 +214,15 @@ class _DiceWidgetState extends State<DiceWidget> with TickerProviderStateMixin {
         _isRolling = false;
       });
 
+      // Notify parent that animation is done BEFORE calling roll logic
+      // so that isAnimating is cleared before rollDice() executes.
+      widget.onAnimationEnd?.call();
+
       // Now call the actual roll logic
       widget.onRoll?.call();
 
       // Play result reveal sound
       _soundService.playResultReveal();
-
-      // Notify parent that animation is done
-      widget.onAnimationEnd?.call();
     }
   }
 
