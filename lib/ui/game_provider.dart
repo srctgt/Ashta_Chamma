@@ -115,7 +115,7 @@ class GameProvider extends ChangeNotifier {
 
   /// Rolls the dice for the current player.
   void rollDice() {
-    if (_controller == null || !isRolling || isAiTurn || _isAnimating) return;
+    if (_controller == null || !isRolling || isAiTurn) return;
 
     _controller!.rollDice();
     notifyListeners();
