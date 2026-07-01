@@ -78,6 +78,44 @@ class Dice {
     );
   }
 
+  /// Forces a roll that produces an entry value (4 or 8) for cowrie shells.
+  /// Randomly picks between 4 (all mouth up) and 8 (all mouth down).
+  DiceResult forceEntryRoll() {
+    switch (mode) {
+      case DiceMode.cowrieShells:
+        return _forceCowrieEntryRoll();
+      case DiceMode.regularDice:
+        // For regular dice, entry value is 6
+        return const DiceResult(
+          value: 6,
+          grantsBonusTurn: true,
+          allowsEntry: true,
+        );
+    }
+  }
+
+  DiceResult _forceCowrieEntryRoll() {
+    // Randomly pick between 4 (Chamma - all mouth up) and 8 (Ashta - all mouth down)
+    final allMouthUp = _random.nextBool();
+    if (allMouthUp) {
+      // Chamma: all 4 shells mouth up = value 4
+      return const DiceResult(
+        value: 4,
+        grantsBonusTurn: true,
+        allowsEntry: true,
+        shellResults: [true, true, true, true],
+      );
+    } else {
+      // Ashta: all 4 shells mouth down = value 8
+      return const DiceResult(
+        value: 8,
+        grantsBonusTurn: true,
+        allowsEntry: true,
+        shellResults: [false, false, false, false],
+      );
+    }
+  }
+
   DiceResult _rollCowrieShells() {
     // Simulate 4 cowrie shells, each with 50% chance mouth-up
     final shells = List.generate(4, (_) => _random.nextBool());
